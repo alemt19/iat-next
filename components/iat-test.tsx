@@ -291,7 +291,7 @@ export function IATTest({ testConfig, onComplete }: IATTestProps) {
       if (key !== "e" && key !== "i") return
 
       const reactionTime = Date.now() - startTime
-      if (reactionTime >= 3000) return
+      if (reactionTime >= 5000) return
 
       const currentTrialData = trials[currentTrial]
       const isCorrect = key === currentTrialData.correctKey
@@ -370,7 +370,7 @@ export function IATTest({ testConfig, onComplete }: IATTestProps) {
     if (showStimulus && !showError) {
       const timeout = setTimeout(() => {
         handleTimeout()
-      }, 3000)
+      }, 5000)
       return () => clearTimeout(timeout)
     }
   }, [showStimulus, showError, handleTimeout])
