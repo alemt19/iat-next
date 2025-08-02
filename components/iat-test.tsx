@@ -126,7 +126,7 @@ export function IATTest({ testConfig, onComplete }: IATTestProps) {
           break
         case "asociacion-congruente-2":
         case "asociacion-incongruente-2":
-          trialCount = 40
+          trialCount = 20
           break
         default:
           trialCount = 20
