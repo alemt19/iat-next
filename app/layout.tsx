@@ -5,6 +5,9 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: 'Test de Asociación Implícita',
+  icons: {
+    icon: '/favicon.svg', 
+  },
 }
 
 export default function RootLayout({
