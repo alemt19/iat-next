@@ -25,7 +25,7 @@ export function TestSelector() {
         <CardContent>
           <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-3">
             {Object.entries(testConfigs).map(([testId, config]) => (
-              <Card key={testId} className="cursor-pointer hover:shadow-lg transition-shadow">
+              <Card key={testId} className="cursor-pointer hover:shadow-lg transition-shadow justify-between">
                 <CardHeader>
                   <CardTitle className="text-lg">{config.title}</CardTitle>
                   <CardDescription className="text-sm">{config.description}</CardDescription>
