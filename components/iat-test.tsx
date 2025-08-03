@@ -122,14 +122,14 @@ export function IATTest({ testConfig, onComplete }: IATTestProps) {
           break
         case "asociacion-congruente-1":
         case "asociacion-incongruente-1":
-          trialCount = 20
+          trialCount = 4
           break
         case "asociacion-congruente-2":
         case "asociacion-incongruente-2":
-          trialCount = 20
+          trialCount = 4
           break
         default:
-          trialCount = 20
+          trialCount = 4
       }
 
       let baseStimuli: Trial[] = []
