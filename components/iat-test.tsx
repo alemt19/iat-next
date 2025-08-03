@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { useIsMobile } from "@/hooks/use-mobile"
 import type { TestConfig, TestStimulus } from "@/lib/test-configs"
 
 export interface TestResults {
@@ -91,6 +92,7 @@ export function IATTest({ testConfig, onComplete }: IATTestProps) {
     [testConfig]
   )
 
+  const isMobile = useIsMobile()
   const [currentBlock, setCurrentBlock] = useState<BlockType>(blockOrder[0])
   const [currentTrial, setCurrentTrial] = useState(0)
   const [trials, setTrials] = useState<Trial[]>([])
@@ -118,18 +120,18 @@ export function IATTest({ testConfig, onComplete }: IATTestProps) {
         case "familarizacion-1":
         case "familarizacion-2":
         case "inversion":
-          trialCount = 20
+          trialCount = 4
           break
         case "asociacion-congruente-1":
         case "asociacion-incongruente-1":
-          trialCount = 20
+          trialCount = 4
           break
         case "asociacion-congruente-2":
         case "asociacion-incongruente-2":
-          trialCount = 20
+          trialCount = 4
           break
         default:
-          trialCount = 20
+          trialCount = 4
       }
 
       let baseStimuli: Trial[] = []
@@ -282,13 +284,10 @@ export function IATTest({ testConfig, onComplete }: IATTestProps) {
     }, 300)
   }, [currentTrial, trials.length, currentBlock, blockOrder, calculateResults])
 
-  const handleKeyPress = useCallback(
-    (event: KeyboardEvent) => {
-      if (showInstructions || showError) return
-      if (!showStimulus || currentTrial >= trials.length) return
-
-      const key = event.key.toLowerCase()
-      if (key !== "e" && key !== "i") return
+  // Extraemos lógica de respuesta para teclado y botones móviles
+  const handleResponse = useCallback(
+    (key: "e" | "i") => {
+      if (showInstructions || showError || !showStimulus || currentTrial >= trials.length) return
 
       const reactionTime = Date.now() - startTime
       if (reactionTime >= 5000) return
@@ -296,17 +295,16 @@ export function IATTest({ testConfig, onComplete }: IATTestProps) {
       const currentTrialData = trials[currentTrial]
       const isCorrect = key === currentTrialData.correctKey
 
-      setAttempts((prev) => prev + 1)
+      setAttempts(prev => prev + 1)
 
       if (isCorrect) {
         const stageKey = blockStageMap[currentBlock]
         if (stageKey) {
-          setReactionTimes((prev) => ({
+          setReactionTimes(prev => ({
             ...prev,
             [stageKey]: [...prev[stageKey], reactionTime],
           }))
         }
-
         setShowStimulus(false)
 
         setTimeout(() => {
@@ -318,7 +316,7 @@ export function IATTest({ testConfig, onComplete }: IATTestProps) {
               setCurrentBlock(blockOrder[currentBlockIndex + 1])
             }
           } else {
-            setCurrentTrial((prev) => prev + 1)
+            setCurrentTrial(prev => prev + 1)
           }
         }, 300)
       } else {
@@ -342,8 +340,25 @@ export function IATTest({ testConfig, onComplete }: IATTestProps) {
       blockOrder,
       calculateResults,
       blockStageMap,
-    ],
+    ]
   )
+
+  const handleKeyPress = useCallback(
+    (event: KeyboardEvent) => {
+      const key = event.key.toLowerCase()
+      if (key !== "e" && key !== "i") return
+      handleResponse(key)
+    },
+    [handleResponse]
+  )
+
+  // No agregamos listener teclado en móvil
+  useEffect(() => {
+    if (!isMobile && !showInstructions && !showError && showStimulus) {
+      window.addEventListener("keydown", handleKeyPress)
+      return () => window.removeEventListener("keydown", handleKeyPress)
+    }
+  }, [handleKeyPress, showInstructions, showError, showStimulus, isMobile])
 
   useEffect(() => {
     const startBlock = () => {
@@ -400,16 +415,18 @@ export function IATTest({ testConfig, onComplete }: IATTestProps) {
 
               <h2 className="text-2xl font-bold">{instructions.title}</h2>
 
-              <div className="flex justify-between items-center text-lg font-medium py-8">
-                <div className="text-left">
-                  <div className="text-sm text-gray-600 mb-2">Presiona 'E' para</div>
-                  <div className="font-bold">{instructions.leftCategory}</div>
+              {!isMobile && (
+                <div className="flex justify-between items-center text-lg font-medium py-8">
+                  <div className="text-left">
+                    <div className="text-sm text-gray-600 mb-2">Presiona 'E' para</div>
+                    <div className="font-bold">{instructions.leftCategory}</div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-sm text-gray-600 mb-2">Presiona 'I' para</div>
+                    <div className="font-bold">{instructions.rightCategory}</div>
+                  </div>
                 </div>
-                <div className="text-right">
-                  <div className="text-sm text-gray-600 mb-2">Presiona 'I' para</div>
-                  <div className="font-bold">{instructions.rightCategory}</div>
-                </div>
-              </div>
+              )}
 
               <p className="text-gray-700 text-lg">{instructions.description}</p>
 
@@ -436,11 +453,15 @@ export function IATTest({ testConfig, onComplete }: IATTestProps) {
 
         <div className="flex justify-between items-center text-lg font-medium mb-12">
           <div className="text-left">
-            <div className="text-sm text-gray-600 mb-2">Presiona 'E' para</div>
+            {!isMobile && (
+              <div className="text-sm text-gray-600 mb-2">Presiona 'E' para</div>
+            )}
             <div className="font-bold">{instructions.leftCategory}</div>
           </div>
           <div className="text-right">
-            <div className="text-sm text-gray-600 mb-2">Presiona 'I' para</div>
+            {!isMobile && (
+              <div className="text-sm text-gray-600 mb-2">Presiona 'I' para</div>
+            )}
             <div className="font-bold">{instructions.rightCategory}</div>
           </div>
         </div>
@@ -469,6 +490,17 @@ export function IATTest({ testConfig, onComplete }: IATTestProps) {
             )}
             {!showStimulus && !showError && <div className="w-2 h-2 bg-black rounded-full"></div>}
           </div>
+
+          {isMobile && (
+            <div className="flex justify-center mt-8 gap-8 w-full max-w-md">
+              <Button className="flex-grow" onClick={() => handleResponse("e")} size="lg">
+                {getBlockInstructions(currentBlock).leftCategory}
+              </Button>
+              <Button className="flex-grow" onClick={() => handleResponse("i")} size="lg">
+                {getBlockInstructions(currentBlock).rightCategory}
+              </Button>
+            </div>
+          )}
 
           <div className="mt-8 text-sm text-gray-600">
             Elemento {currentTrial + 1} de {trials.length}

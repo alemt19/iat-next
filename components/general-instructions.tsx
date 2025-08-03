@@ -1,9 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import type { TestConfig } from "@/lib/test-configs"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 interface GeneralInstructionsProps {
   testConfig: TestConfig
@@ -11,7 +12,12 @@ interface GeneralInstructionsProps {
 }
 
 export function GeneralInstructions({ testConfig, onComplete }: GeneralInstructionsProps) {
-  const [step, setStep] = useState<1 | 2>(1)
+  const [step, setStep] = React.useState<1 | 2>(1)
+  const isMobile = useIsMobile()
+
+  // Textos dinámicos según dispositivo
+  const teclaIzquierdaTexto = isMobile ? "Botón izquierdo" : "Tecla 'E'"
+  const teclaDerechaTexto = isMobile ? "Botón derecho" : "Tecla 'I'"
 
   const showInstructions = step === 1
   const showStimuli = step === 2
@@ -29,28 +35,42 @@ export function GeneralInstructions({ testConfig, onComplete }: GeneralInstructi
               <p>
                 <strong>Bienvenido al Test de Asociación Implícita: {testConfig.title}.</strong>
               </p>
+
               <p>{testConfig.description}</p>
+
               <p>
-                En este test, verás elementos que aparecerán uno a la vez en el centro de la pantalla. Tu tarea será
-                clasificarlos lo más rápido posible presionando las teclas correspondientes.
+                En este test, verás elementos uno a la vez en el centro de la pantalla. Tu tarea será clasificarlos lo más rápido posible.
               </p>
+
               <div className="bg-blue-50 p-4 rounded-lg">
-                <h3 className="font-semibold mb-2">Instrucciones de las teclas:</h3>
+                <h3 className="font-semibold mb-2">Instrucciones {isMobile ? "de los botones" : "de las teclas"}:</h3>
                 <ul className="space-y-2 list-disc list-inside">
-                  <li><strong>Tecla 'E':</strong> Para elementos de la categoría izquierda</li>
-                  <li><strong>Tecla 'I':</strong> Para elementos de la categoría derecha</li>
+                  <li>
+                    <strong>{teclaIzquierdaTexto}:</strong> Para elementos de la categoría izquierda
+                  </li>
+                  <li>
+                    <strong>{teclaDerechaTexto}:</strong> Para elementos de la categoría derecha
+                  </li>
                 </ul>
               </div>
-              <p>El test consta de varias etapas. En cada etapa, las categorías que aparecen en la parte superior de la pantalla te indicarán qué tecla presionar para cada tipo de elemento.</p>
-              <p><strong>Importante:</strong></p>
+
+              <p>
+                El test consta de varias etapas. En cada etapa, las categorías que aparecen en la parte superior de la pantalla te indicarán qué tecla o botón presionar.
+              </p>
+
+              <p>
+                <strong>Importante:</strong>
+              </p>
+
               <ul className="list-disc list-inside space-y-1 ml-4">
                 <li>Responde lo más rápido posible, pero trata de ser preciso</li>
                 <li>Tienes máximo 3 segundos para responder a cada elemento</li>
                 <li>Si no respondes a tiempo, el test avanzará automáticamente a la siguiente pregunta</li>
-                <li>Si cometes un error, aparecerá una X roja. Presiona la tecla correcta para continuar</li>
-                <li>Mantén tus dedos sobre las teclas 'E' e 'I' durante todo el test</li>
+                <li>Si cometes un error, aparecerá una X roja. Presiona {isMobile ? "el botón correcto" : "la tecla correcta"} para continuar</li>
+                <li>Mantén tus dedos {isMobile ? "sobre los botones" : "sobre las teclas 'E' e 'I'"} durante todo el test</li>
                 <li>El test tomará aproximadamente {testConfig.estimatedDuration}</li>
               </ul>
+
               <p>Al final del test, recibirás información sobre tus resultados.</p>
 
               <div className="text-center pt-6">

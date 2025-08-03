@@ -37,7 +37,7 @@ export function DemographicForm({ onComplete }: DemographicFormProps) {
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">Test de Asociación Implícita</CardTitle>
           <CardDescription>
-            Por favor, completa la siguiente información demográfica antes de comenzar el test.
+            Por favor, completa la siguiente información antes de comenzar el test.
           </CardDescription>
         </CardHeader>
         <CardContent>
