@@ -293,7 +293,7 @@ export const testConfigs: Record<string, TestConfig> = {
   },
 
   
-  "emociones-formas-3": {
+  "emociones-colores": {
     title: "Emociones y Colores - 1",
     description: "Mide asociaciones entre emociones (felicidad/tristeza) y tipos de colores (fríos/cálidos).",
     estimatedDuration: "5-7 minutos",
@@ -420,7 +420,7 @@ export const testConfigs: Record<string, TestConfig> = {
   },
 
   
-  "emociones-formas-4": {
+  "emociones-colores-2": {
     title: "Emociones y Colores - 2",
     description: "Mide asociaciones entre emociones (nostalgia/tristeza) y tipos de colores (fríos/cálidos).",
     estimatedDuration: "5-7 minutos",
