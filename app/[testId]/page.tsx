@@ -52,12 +52,10 @@ export default function TestPage() {
 
   // Función para guardar a Supabase
   const saveResultsToSupabase = async (results: TestResults, demographics: DemographicData) => {
-    // Calcula avgRT para guardarlo, igual que en Results
     const avgRT =
       results.stage3RT.concat(results.stage4RT, results.stage6RT, results.stage7RT).reduce((a, b) => a + b, 0) /
       results.totalTrials || 0
 
-    // Puedes calcular la interpretación aquí para guardar (o guardarla por separado)
     const absScore = Math.abs(results.dScore)
     let dScoreLevel = "Poca o ninguna preferencia"
     let dScoreDescription = "Tus resultados sugieren poca o ninguna asociación automática entre las categorías."
@@ -66,24 +64,27 @@ export default function TestPage() {
       dScoreLevel = "Preferencia ligera"
       dScoreDescription =
         results.dScore > 0
-          ? `Tus resultados sugieren una ligera asociación automática entre ${testConfigs[testId].leftCategories.join(" y ")}.`
-          : `Tus resultados sugieren una ligera asociación automática entre ${testConfigs[testId].rightCategories.join(" y ")}.`
+          ? `Tus resultados sugieren una ligera asociación automática entre ${testConfig.leftCategories.join(" y ")}.`
+          : `Tus resultados sugieren una ligera asociación automática entre ${testConfig.rightCategories.join(" y ")}.`
     } else if (absScore >= 0.35 && absScore < 0.65) {
       dScoreLevel = "Preferencia moderada"
       dScoreDescription =
         results.dScore > 0
-          ? `Tus resultados sugieren una asociación automática moderada entre ${testConfigs[testId].leftCategories.join(" y ")}.`
-          : `Tus resultados sugieren una asociación automática moderada entre ${testConfigs[testId].rightCategories.join(" y ")}.`
+          ? `Tus resultados sugieren una asociación automática moderada entre ${testConfig.leftCategories.join(" y ")}.`
+          : `Tus resultados sugieren una asociación automática moderada entre ${testConfig.rightCategories.join(" y ")}.`
     } else if (absScore >= 0.65) {
       dScoreLevel = "Preferencia fuerte"
       dScoreDescription =
         results.dScore > 0
-          ? `Tus resultados sugieren una fuerte asociación automática entre ${testConfigs[testId].leftCategories.join(" y ")}.`
-          : `Tus resultados sugieren una fuerte asociación automática entre ${testConfigs[testId].rightCategories.join(" y ")}.`
+          ? `Tus resultados sugieren una fuerte asociación automática entre ${testConfig.leftCategories.join(" y ")}.`
+          : `Tus resultados sugieren una fuerte asociación automática entre ${testConfig.rightCategories.join(" y ")}.`
     }
 
     const { error } = await supabase.from("iat_results").insert([
       {
+        test_title: testConfig.title,                          // Nuevo dato
+        left_category: testConfig.leftCategories.join(" y "), // Nuevo dato
+        right_category: testConfig.rightCategories.join(" y "),
         d_score: results.dScore,
         d_score_level: dScoreLevel,
         d_score_description: dScoreDescription,
@@ -100,6 +101,7 @@ export default function TestPage() {
 
     return error
   }
+
 
   const handleTestComplete = async (results: TestResults) => {
     if (!demographicData) {

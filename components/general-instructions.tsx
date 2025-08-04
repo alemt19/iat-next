@@ -83,7 +83,7 @@ export function GeneralInstructions({ testConfig, onComplete }: GeneralInstructi
                 if (group.length === 0) return null
                 return (
                   <section key={subcat}>
-                    <h3 className="font-semibold mb-2">{subcat}</h3>
+                    <h3 className="text-xl font-semibold mb-2">{subcat}</h3>
                     <div className="flex flex-wrap gap-4 justify-center">
                       {group.map((stimulus) => (
                         <div key={stimulus.id} className="flex flex-col items-center gap-2">
