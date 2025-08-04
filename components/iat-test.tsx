@@ -119,19 +119,17 @@ export function IATTest({ testConfig, onComplete }: IATTestProps) {
       switch (blockType) {
         case "familarizacion-1":
         case "familarizacion-2":
-        case "inversion":
-          trialCount = 4
+          trialCount = 20
           break
+        case "inversion":
         case "asociacion-congruente-1":
         case "asociacion-incongruente-1":
-          trialCount = 4
-          break
         case "asociacion-congruente-2":
         case "asociacion-incongruente-2":
-          trialCount = 4
+          trialCount = 40
           break
         default:
-          trialCount = 4
+          trialCount = 40
       }
 
       let baseStimuli: Trial[] = []
