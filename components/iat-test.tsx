@@ -142,17 +142,17 @@ const stimulus = trials[currentTrial]?.stimulus || "";
       switch (blockType) {
         case "familarizacion-1":
         case "familarizacion-2":
-          trialCount = 4
+          trialCount = 20
           break
         case "inversion":
         case "asociacion-congruente-1":
         case "asociacion-incongruente-1":
         case "asociacion-congruente-2":
         case "asociacion-incongruente-2":
-          trialCount = 4
+          trialCount = 40
           break
         default:
-          trialCount = 4
+          trialCount = 40
       }
 
       let baseStimuli: Trial[] = []
