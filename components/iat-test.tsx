@@ -142,7 +142,7 @@ const stimulus = trials[currentTrial]?.stimulus || "";
       switch (blockType) {
         case "familarizacion-1":
         case "familarizacion-2":
-          trialCount = 20
+          trialCount = 40
           break
         case "inversion":
         case "asociacion-congruente-1":
@@ -525,11 +525,7 @@ const stimulus = trials[currentTrial]?.stimulus || "";
             </div>
           )}
 
-          <div className="mt-8 text-sm text-gray-600">
-            Elemento {currentTrial + 1} de {trials.length}
-          </div>
-
-          <div className="mt-4 text-xs text-gray-500">Si cometes un error presiona la otra tecla para continuar</div>
+          <div className="mt-4 text-sm text-gray-500">Si cometes un error presiona la otra tecla para continuar</div>
         </div>
       </div>
     </div>
