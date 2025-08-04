@@ -68,7 +68,6 @@ export function GeneralInstructions({ testConfig, onComplete }: GeneralInstructi
                 <li>Si no respondes a tiempo, el test avanzará automáticamente a la siguiente pregunta</li>
                 <li>Si cometes un error, aparecerá una X roja. Presiona {isMobile ? "el botón correcto" : "la tecla correcta"} para continuar</li>
                 <li>Mantén tus dedos {isMobile ? "sobre los botones" : "sobre las teclas 'E' e 'I'"} durante todo el test</li>
-                <li>El test tomará aproximadamente {testConfig.estimatedDuration}</li>
               </ul>
 
               <div className="text-center pt-6">
