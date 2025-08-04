@@ -71,8 +71,6 @@ export function GeneralInstructions({ testConfig, onComplete }: GeneralInstructi
                 <li>El test tomará aproximadamente {testConfig.estimatedDuration}</li>
               </ul>
 
-              <p>Al final del test, recibirás información sobre tus resultados.</p>
-
               <div className="text-center pt-6">
                 <Button onClick={() => setStep(2)} size="lg">
                   Siguiente
