@@ -100,6 +100,7 @@ export function IATTest({ testConfig, onComplete }: IATTestProps) {
   const [showStimulus, setShowStimulus] = useState(false)
   const [showError, setShowError] = useState(false)
   const [startTime, setStartTime] = useState(0)
+  const [imgOrientation, setImgOrientation] = useState<"vertical" | "horizontal" | null>(null);
   const [reactionTimes, setReactionTimes] = useState<{
     stage3: number[]
     stage4: number[]
@@ -113,23 +114,45 @@ export function IATTest({ testConfig, onComplete }: IATTestProps) {
   })
   const [attempts, setAttempts] = useState(0)
 
+
+const stimulus = trials[currentTrial]?.stimulus || "";
+
+  // Detectar orientación cuando cambia estímulo
+  useEffect(() => {
+    if (!stimulus) return;
+
+    if (typeof stimulus === "string" && /\.(png|jpe?g|svg|gif|bmp|webp)$/i.test(stimulus)) {
+      const img = new Image();
+      img.src = stimulus;
+      img.onload = () => {
+        if (img.naturalHeight > img.naturalWidth) {
+          setImgOrientation("vertical");
+        } else {
+          setImgOrientation("horizontal");
+        }
+      };
+    } else {
+      setImgOrientation(null);
+    }
+  }, [stimulus]);
+
   const generateTrials = useCallback(
     (blockType: BlockType): Trial[] => {
       let trialCount
       switch (blockType) {
         case "familarizacion-1":
         case "familarizacion-2":
-          trialCount = 20
+          trialCount = 4
           break
         case "inversion":
         case "asociacion-congruente-1":
         case "asociacion-incongruente-1":
         case "asociacion-congruente-2":
         case "asociacion-incongruente-2":
-          trialCount = 40
+          trialCount = 4
           break
         default:
-          trialCount = 40
+          trialCount = 4
       }
 
       let baseStimuli: Trial[] = []
@@ -465,27 +488,29 @@ export function IATTest({ testConfig, onComplete }: IATTestProps) {
         </div>
 
         <div className="text-center">
-          <div className="h-32 flex items-center justify-center">
+          <div className="h-60 flex items-center justify-center">
             {showError && <div className="text-6xl text-red-500 font-bold">✕</div>}
-            {showStimulus && !showError && trials[currentTrial] && (
-              // Aquí detectamos si el display es una ruta (string que termina en extensión de imagen) para renderizar img
-              (() => {
-                const stimulus = trials[currentTrial].stimulus
-                const isImage =
-                  typeof stimulus === "string" &&
-                  /\.(png|jpe?g|svg|gif|bmp|webp)$/.test(stimulus.toLowerCase())
-                return isImage ? (
+            {showStimulus && !showError && trials[currentTrial] && (() => {
+              const stimulus = trials[currentTrial].stimulus;
+              const isImage =
+                typeof stimulus === "string" &&
+                /\.(png|jpe?g|svg|gif|bmp|webp)$/i.test(stimulus);
+
+              if (isImage) {
+                return (
                   <img
                     src={stimulus}
-                    alt={"stimulus"}
-                    className="h-32 object-contain mx-auto"
+                    alt="stimulus"
                     draggable={false}
+                    className={`mx-auto object-contain ${
+                      imgOrientation === "vertical" ? "w-40" : "h-40"
+                    }`}
                   />
-                ) : (
-                  <span className="text-8xl">{stimulus}</span>
-                )
-              })()
-            )}
+                );
+              } else {
+                return <span className="text-8xl">{stimulus}</span>;
+              }
+            })()}
             {!showStimulus && !showError && <div className="w-2 h-2 bg-black rounded-full"></div>}
           </div>
 
